@@ -1,12 +1,13 @@
 package com.teach.Controller;
 
-import org.springframework.http.HttpRequest;
+import com.teach.Service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.swing.*;
+import javax.annotation.Resource;
 import javax.ws.rs.QueryParam;
 
 /**
@@ -14,10 +15,13 @@ import javax.ws.rs.QueryParam;
  */
 @Controller
 public class maincontroller {
-    @RequestMapping(value = "/login.do",method = RequestMethod.POST)
-    public String index(@QueryParam("username")String username,@QueryParam("password")String  password) {
-       System.out.print(username);
-        System.out.print(password);
+
+    @Autowired
+    private StudentService studentService;
+
+    @RequestMapping(value = "/login.do",method = RequestMethod.GET)
+    public String index(@QueryParam("userName")String userName,@QueryParam("pwd")String  pwd) {
+            studentService.findStudentById(userName,pwd);
         return "index";
     }
 }
