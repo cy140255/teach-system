@@ -53,7 +53,8 @@
                             <input type="submit" value="登录" />
                         </p>
                         <p class="change_link">
-                            <a href="#toregister" class="to_register">忘记密码?</a>
+                            <%--<a href="#toregister" class="to_register">忘记密码?</a>--%>
+                            <a href="export.do" class="to_register">点我</a>
                         </p>
                     </form>
                 </div>
@@ -91,5 +92,6 @@
         </div>
     </section>
 </div>
+
 </body>
 </html>
