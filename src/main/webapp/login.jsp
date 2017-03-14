@@ -49,7 +49,7 @@
                             <input id="password" name="pwd" required="required" type="password" placeholder="eg. X8df!90EO" />
                         </p>
 
-                        <p class="login button">
+                        <p class="login button" >
                             <input type="submit" value="登录" />
                         </p>
                         <p class="change_link">
