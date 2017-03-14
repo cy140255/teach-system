@@ -1,9 +1,12 @@
 package com.teach.Service;
 
 import com.teach.Mapper.StudentMapper;
+import com.teach.pojo.Student;
+import com.util.dao.BaseDao;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.entity.TemplateExportParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,9 +25,15 @@ public class StudentService {
     @Resource
     StudentMapper studentMapper;
 
+
+
+
+    private BaseDao baseDao  = new BaseDao();
     public Student findStudentById(String userName, String password)
-     {
-         return studentMapper.findStuddentById(userName,password);
+     {     Long id = Long.parseLong(userName);
+          List<Student> student = baseDao.findAll(Student.class);
+
+         return student.get(0);
     }
 
 

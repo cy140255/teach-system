@@ -1,5 +1,6 @@
 package com.teach.Mapper;
 
+import com.teach.pojo.Student;
 import org.apache.ibatis.annotations.Param;
 
 /**
