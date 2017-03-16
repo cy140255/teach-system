@@ -25,15 +25,12 @@ public class StudentService {
     @Resource
     StudentMapper studentMapper;
 
-
-
-
     private BaseDao baseDao  = new BaseDao();
     public Student findStudentById(String userName, String password)
-     {     Long id = Long.parseLong(userName);
-          List<Student> student = baseDao.findAll(Student.class);
+     {
+            Student student = studentMapper.findStuddentById(userName,password);
 
-         return student.get(0);
+         return student;
     }
 
 

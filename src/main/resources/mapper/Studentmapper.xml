@@ -5,7 +5,7 @@
 <mapper namespace="com.teach.Mapper.StudentMapper">
 
     <select id="findStuddentById" resultType="com.teach.pojo.Student">
-        SELECT * FROM  Student WHERE  sname = #{userName} and pwd=#{pwd}
+        SELECT * FROM  Student WHERE  sname = #{userName} and password=#{pwd}
     </select>
 
 

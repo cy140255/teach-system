@@ -33,7 +33,7 @@ public class maincontroller {
     @RequestMapping(value = "/login.do",method = RequestMethod.GET)
     public String index(@QueryParam("userName")String userName,@QueryParam("pwd")String  pwd) {
             studentService.findStudentById(userName,pwd);
-        return "index";
+        return "teacher/show";
     }
 
 
