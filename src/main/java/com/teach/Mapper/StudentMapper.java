@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface StudentMapper {
     Student findStuddentById(@Param("userName") String userName, @Param("pwd")String pwd);
-
+    void saveStudent(@Param("sname")String sname,@Param("password")String password);
 
 }

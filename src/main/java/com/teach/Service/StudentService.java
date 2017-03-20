@@ -2,6 +2,7 @@ package com.teach.Service;
 
 import com.teach.Mapper.StudentMapper;
 import com.teach.pojo.Student;
+import com.util.Dto.BaseResponseDto;
 import com.util.dao.BaseDao;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -20,15 +21,15 @@ import java.util.*;
  * Created by superfq on 2017/3/10.
  */
 @Service
-@javax.transaction.Transactional
 public class StudentService {
-    @Resource
-    StudentMapper studentMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
-    private BaseDao baseDao  = new BaseDao();
+    @Autowired
+     private BaseDao baseDao;
     public Student findStudentById(String userName, String password)
      {
-            Student student = studentMapper.findStuddentById(userName,password);
+         Student student = studentMapper.findStuddentById(userName,password);
 
          return student;
     }
@@ -85,4 +86,15 @@ public class StudentService {
 
         return new ByteArrayInputStream(output.toByteArray());
     }
+    public BaseResponseDto save(String sname,String password){
+        Student student = new Student();
+        student.setSname(sname);
+        student.setPassword(password);
+        baseDao.persist(student);
+        BaseResponseDto responseDto = new BaseResponseDto();
+        responseDto.setMessage("添加成功");
+        return responseDto;
+    }
+
+
 }
