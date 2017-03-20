@@ -40,16 +40,12 @@ public class StudentService {
 
         Map<String, Object> map = new HashMap<String, Object>();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        int num = 1;
-
             Map<String, Object> eachMap = new HashMap<String, Object>();
-            eachMap.put("num", num);
-            num++;
+            eachMap.put("num", 1);
             eachMap.put("customerName", "123");
             eachMap.put("requiredDate","123");
-                eachMap.put("vesselVoyage", "123" + "/" + "123");
+            eachMap.put("vesselVoyage", "123" + "/" + "123");
             eachMap.put("orderNumber", "123");
-
             eachMap.put("sizeTypeItem", "123");
             eachMap.put("orderStatus", "123");
             eachMap.put("containerRequirement", "123");
@@ -59,13 +55,11 @@ public class StudentService {
             eachMap.put("dollarInOutCharge", "123");
             eachMap.put("serviceCharge", "123");
             eachMap.put("sumPrice", "123");
-
             eachMap.put("supplierName", "123");
             eachMap.put("userName","123");
             eachMap.put("orderBillStatusName", "123");
             eachMap.put("releaseDate", "123");
             eachMap.put("createTime", "123");
-
             list.add(eachMap);
 
         map.put("mapList", list);
