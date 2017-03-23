@@ -1,7 +1,6 @@
-package com.teach.pojo;
+package com.teach.Entity;
 
 import com.util.entity.AggregateRoot;
-import com.util.entity.BaseEntity;
 
 import javax.persistence.*;
 
@@ -13,7 +12,7 @@ import javax.persistence.*;
 public class Student extends AggregateRoot {
     @Id
     @Column(name = "ID", nullable = false, unique = true)
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "sname")

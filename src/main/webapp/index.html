@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <base href="http://localhost:8080/"/>
+    <script type="text/javascript" src="js/jquery-3.2.0.js"></script>
+    <script type="text/javascript">
+
+        $(function(){
+            function countDate(){
+                var nowDate = new Date();
+                var endDate = new Date("2017-03-30 10:06:29");
+                var lastDate = endDate.getTime()-nowDate.getTime();
+                var lastSecond = parseInt(lastDate/1000);
+                var day = Math.floor(lastSecond/(24*60*60));
+                var hour =Math.floor((lastSecond-(day*24*60*60))/3600);
+                var minute=Math.floor((lastSecond-(day*24*60*60)-(hour*60*60))/60);
+                var second = Math.floor(lastSecond-(day*24*60*60)-(hour*60*60)-(minute*60));
+                var date = day+"天"+hour+"时"+minute+"分"+second+"秒";
+                $("#i2").html(date);
+            };
+
+            $("#i1").click(function(){
+                    setInterval(countDate,1000);
+            });
+1
+        });
+
+    </script>
+</head>
+<body>
+<div>
+    <input id="i1" type="button" value="开始到计时"/>
+    <div id="i2"></div>
+</div>
+</body>
+
+
+</html>

@@ -1,20 +1,14 @@
 package com.teach.Controller;
 
 import com.teach.Service.StudentService;
-import com.teach.pojo.Student;
-import com.util.Dto.BaseResponseDto;
 import com.util.HttpUtil;
 import com.util.JsonUtil;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.QueryParam;
@@ -24,8 +18,6 @@ import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static java.util.Objects.isNull;
 
 /**
  * Created by superfq on 2017/3/10.
@@ -64,15 +56,13 @@ public class maincontroller {
     @RequestMapping(value = "/ajax.do",method = RequestMethod.POST,produces="application/json;charset=UTF-8")
     @ResponseBody
     public String  test() throws Exception{
-        Student student = studentService.findStudentById("4","3");
-        return JsonUtil.JsonUtil(student);
+        return JsonUtil.JsonUtil(studentService.save());
     }
 
-//    @RequestMapping(value = "/createUser.do",method = RequestMethod.POST)
-//    public String save(@QueryParam("sname")String sname,@QueryParam("password")String password) throws Exception{
-//        BaseResponseDto responseDto= studentService.save(sname,password);
-//        return JsonUtil.JsonUtil(responseDto);
-//    }
+    @RequestMapping(value = "/createUser.do",method = RequestMethod.POST)
+    public String save(@QueryParam("sname")String sname,@QueryParam("password")String password) throws Exception{
+        return JsonUtil.JsonUtil(studentService.save());
+    }
 
 
 }
