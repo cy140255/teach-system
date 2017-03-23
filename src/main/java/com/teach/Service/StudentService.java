@@ -1,8 +1,8 @@
 package com.teach.Service;
 
 import com.teach.Mapper.StudentMapper;
-import com.teach.pojo.Student;
-import com.util.Dto.BaseResponseDto;
+import com.teach.Entity.Student;
+import com.util.DateTimeUtil;
 import com.util.dao.BaseDao;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
@@ -10,7 +10,6 @@ import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -24,9 +23,8 @@ import java.util.*;
 public class StudentService {
     @Autowired
     private StudentMapper studentMapper;
-
     @Autowired
-     private BaseDao baseDao;
+    private BaseDao baseDao;
     public Student findStudentById(String userName, String password)
      {
          Student student = studentMapper.findStuddentById(userName,password);
@@ -86,15 +84,19 @@ public class StudentService {
 
         return new ByteArrayInputStream(output.toByteArray());
     }
-    public BaseResponseDto save(String sname,String password){
-        Student student = new Student();
-        student.setSname(sname);
-        student.setPassword(password);
-        baseDao.persist(student);
-        BaseResponseDto responseDto = new BaseResponseDto();
-        responseDto.setMessage("添加成功");
-        return responseDto;
+    public List<String> save(){
+       List<Student> students= baseDao.findAll(Student.class);
+       List<String> stringList = new ArrayList<>();
+        for (Student student:students){
+            stringList.add(changDate(student));
+        }
+
+        return stringList;
     }
 
+    public String changDate(Student student){
+        return DateTimeUtil.convertToDisplayDateTime(student.getCreationTime());
+
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.util.dao;
 
-import com.teach.pojo.Student;
 import com.util.entity.AggregateRoot;
 import jersey.repackaged.com.google.common.collect.Lists;
 import org.springframework.jdbc.core.JdbcTemplate;
