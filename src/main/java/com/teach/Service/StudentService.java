@@ -25,8 +25,8 @@ public class StudentService {
     @Autowired
     private StudentMapper studentMapper;
 
-    @Autowired
-     private BaseDao baseDao;
+//    @Autowired
+//     private BaseDao baseDao;
     public Student findStudentById(String userName, String password)
      {
          Student student = studentMapper.findStuddentById(userName,password);
@@ -74,7 +74,6 @@ public class StudentService {
 
         map.put("SUM", "123");
 
-
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Workbook workbook = ExcelExportUtil.exportExcel(params, map);
         try {
@@ -86,15 +85,15 @@ public class StudentService {
 
         return new ByteArrayInputStream(output.toByteArray());
     }
-    public BaseResponseDto save(String sname,String password){
-        Student student = new Student();
-        student.setSname(sname);
-        student.setPassword(password);
-        baseDao.persist(student);
-        BaseResponseDto responseDto = new BaseResponseDto();
-        responseDto.setMessage("添加成功");
-        return responseDto;
-    }
+//    public BaseResponseDto save(String sname,String password){
+//        Student student = new Student();
+//        student.setSname(sname);
+//        student.setPassword(password);
+//        baseDao.persist(student);
+//        BaseResponseDto responseDto = new BaseResponseDto();
+//        responseDto.setMessage("添加成功");
+//        return responseDto;
+//    }
 
 
 }
