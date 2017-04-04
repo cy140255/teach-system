@@ -10,6 +10,8 @@ import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import java.util.*;
  * Created by superfq on 2017/3/10.
  */
 @Service
+@Transactional
 public class StudentService {
     @Autowired
     private StudentMapper studentMapper;
@@ -27,8 +30,10 @@ public class StudentService {
     private BaseDao baseDao;
     public Student findStudentById(String userName, String password)
      {
-         Student student = studentMapper.findStuddentById(userName,password);
-
+         Student student = new Student();
+         student.setSname(userName);
+         student.setPassword(password);
+         baseDao.persist(student);
          return student;
     }
 
