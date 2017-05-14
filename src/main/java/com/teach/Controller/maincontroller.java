@@ -8,9 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
@@ -30,11 +32,11 @@ public class maincontroller {
     @Autowired
     private StudentService studentService;
 
-    @RequestMapping(value = "/login.do",method = RequestMethod.GET)
-    public String index(@QueryParam("userName")String userName,@QueryParam("pwd")String  pwd) {
-            studentService.findStudentById(userName,pwd);
-        return "teacher/show";
-    }
+//    @RequestMapping(value = "/login.do",method = RequestMethod.GET)
+//    public String index(@QueryParam("userName")String userName,@QueryParam("pwd")String  pwd) {
+//            studentService.findStudentById(userName,pwd);
+//        return "teacher/show";
+//    }
 
 
     @RequestMapping(value = "/export.do",method = RequestMethod.GET)
@@ -62,6 +64,7 @@ public class maincontroller {
     @RequestMapping(value = "/createUser.do",method = RequestMethod.POST)
     public String save(@QueryParam("sname")String sname,@QueryParam("password")String password) throws Exception{
         return JsonUtil.JsonUtil(studentService.save());
+
     }
 
 

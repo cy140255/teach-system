@@ -42,11 +42,11 @@
                         <h1>教务系统</h1>
                         <p>
                             <label for="username" class="uname" data-icon="u" > 账号 </label>
-                            <input id="username" name="userName" required="required" type="text" placeholder="myusername or mymail@mail.com"/>
+                            <input id="username" name="studentId" required="required" type="text" placeholder="myusername or mymail@mail.com" value="2013014087"/>
                         </p>
                         <p>
                             <label for="password" class="youpasswd" data-icon="p"> 密码 </label>
-                            <input id="password" name="pwd" required="required" type="password" placeholder="eg. X8df!90EO" />
+                            <input id="password" name="password" required="required" type="password" placeholder="eg. X8df!90EO" value="094610" />
                         </p>
 
                         <p class="login button" >

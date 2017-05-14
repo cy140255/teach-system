@@ -2,32 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.teach.Mapper.StudentMapper">
-
-    <select id="findStuddentById" resultType="com.teach.Entity.Student.Student">
-        SELECT * FROM  Student WHERE  sname = #{userName} and password=#{pwd}
-    </select>
-
-    <select id="findStudent" resultType="com.teach.Entity.Student.Student">
-        SELECT * FROM  Student WHERE Student_ID = #{studentId} and password = #{password}
+<mapper namespace="com.teach.Mapper.TeacherMapper">
+    <select id="findTeacher" resultType="com.teach.Entity.Teacher.Teacher">
+        SELECT * FROM Teacher WHERE  teacherId = #{teacherId} and password=#{password}
     </select>
 
 
 
-    <select id="getScore" resultType="java.lang.String">
-        SELECT score.scoreNum FROM Score score
-        WHERE score.courseId=#{courseId} AND score.studentId = #{studentId}
-    </select>
 
     <select id="courses" resultType="com.teach.Dto.CourseDto">
         SELECT
         *
         FROM COURSE course
-        INNER JOIN course_student student ON student.course_id=course.ID
-
+        INNER JOIN course_teacher teacher ON teacher.course_id=course.ID
         <where>
             <if test="id != null and id !='' ">
-                student.student_id = #{id}
+                teacher.teacher_id = #{id}
             </if>
 
             <if test="courseStartDate !=null and courseStartDate !='' ">
@@ -52,4 +42,12 @@
     </select>
 
 
+    <select id="getScore" resultType="com.teach.Entity.Student.Score">
+        SELECT * FROM Score score
+        WHERE score.courseId=#{courseId} AND score.studentId = #{studentId}
+    </select>
+
+    <update id="upScore">
+        UPDATE score set scoreNum = #{scoreNum} WHERE  id = #{id}
+    </update>
 </mapper>

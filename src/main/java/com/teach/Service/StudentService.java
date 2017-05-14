@@ -1,22 +1,39 @@
 package com.teach.Service;
 
+import com.teach.Dto.CourseDto;
+import com.teach.Dto.CourseListDto;
+import com.teach.Dto.StudentDto;
+import com.teach.Dto.TeacherDto;
+import com.teach.Entity.Courses.Course;
+import com.teach.Entity.Major.Department;
+import com.teach.Entity.Student.Score;
+import com.teach.Entity.Teacher.Teacher;
 import com.teach.Mapper.StudentMapper;
-import com.teach.Entity.Student;
+import com.teach.Entity.Student.Student;
+import com.teach.Mapper.TeacherMapper;
 import com.util.DateTimeUtil;
 import com.util.dao.BaseDao;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.type.LongType;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.servlet.ServletContext;
 import javax.transaction.Transactional;
+import javax.ws.rs.QueryParam;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Created by superfq on 2017/3/10.
@@ -26,15 +43,18 @@ import java.util.*;
 public class StudentService {
     @Autowired
     private StudentMapper studentMapper;
+
+
+    @Autowired
+    private TeacherMapper teacherMapper;
     @Autowired
     private BaseDao baseDao;
-    public Student findStudentById(String userName, String password)
+    public void findStudentById(String userName, String password)
      {
-         Student student = new Student();
-         student.setSname(userName);
-         student.setPassword(password);
-         baseDao.persist(student);
-         return student;
+         Student student = studentMapper.findStuddentById("zz","ok");
+         student =baseDao.findById(Student.class,student.getId());
+        Department department = student.getDepartment();
+       List<Student> students=  department.getStudentList();
     }
 
 
@@ -82,7 +102,6 @@ public class StudentService {
         Workbook workbook = ExcelExportUtil.exportExcel(params, map);
         try {
             workbook.write(output);
-//			workbook.write(new FileOutputStream(new File("d:/1.xls")));
         } catch (Exception e) {
 
         }
@@ -104,4 +123,185 @@ public class StudentService {
 
     }
 
+    public StudentDto studentLogin(Long studentId, String password){
+        StudentDto studentDto = new StudentDto();
+        Student student = studentMapper.findStudent(studentId,password);
+        student = baseDao.findById(Student.class,student.getId());
+        if (nonNull(student)){
+            studentDto.setId(student.getId());
+            studentDto.setPassword(student.getPassword());
+            studentDto.setStudentId(student.getStudentID());
+        }
+        if (nonNull(student.getDepartment())){
+            studentDto.setDepartmentName(student.getDepartment().getName());
+            studentDto.setMajorName(student.getMajor().getName());
+        }
+
+        if (nonNull(student.getStudentBaseInfo())){
+            studentDto.setStudentBaseInfo(student.getStudentBaseInfo());
+        }
+        if (student.getDispositionSituations().size()>=1){
+            studentDto.setDispositionSituations(student.getDispositionSituations());
+        }
+        if (student.getRewardSituations().size()>=1){
+            studentDto.setRewardSituations(student.getRewardSituations());
+        }
+        if (student.getStudentFamilyInfos().size()>=1){
+            studentDto.setStudentFamilyInfos(student.getStudentFamilyInfos());
+        }
+        if (student.getStudentExperiences().size()>=1){
+            studentDto.setStudentExperiences(student.getStudentExperiences());
+        }
+        if (student.getStudentMajorChanges().size()>=1){
+            studentDto.setStudentMajorChanges(student.getStudentMajorChanges());
+        }
+
+        if (nonNull(student.getOtherInfo())){
+            studentDto.setOtherInfo(student.getOtherInfo());
+        }
+        return studentDto;
+    }
+
+
+
+
+    public TeacherDto teacherLogin(Long id,String password){
+        TeacherDto teacherDto = new TeacherDto();
+        CourseListDto courseListDto = new CourseListDto();
+        Teacher teacher =teacherMapper.findTeacher(id,password);
+        teacher = baseDao.findById(Teacher.class,teacher.getId());
+        List<Student> studentList= teacher.getStudentList();
+        teacherDto.setStudentList(studentList);
+        teacherDto.setTeacherName(teacher.getTeacherName());
+
+
+        List<CourseDto> courses = teacherMapper.courses(teacher.getId(),"","","","");
+        if (nonNull(courses)){
+            List<CourseDto> professionalCourses =courses.stream().filter(t ->t.getCourseCategory().equals("专业基础")).collect(Collectors.toList());
+            List<CourseDto> commonCourses = courses.stream().filter(t ->t.getCourseCategory().equals("通识课")).collect(Collectors.toList());
+            List<CourseDto> laboratoryCourses = courses.stream().filter( t ->t.getCourseCategory().equals("实践环节")).collect(Collectors.toList());
+
+            courseListDto.setLaboratoryCourses(laboratoryCourses);
+            courseListDto.setCommonCourses(commonCourses);
+            courseListDto.setProfessionalCourses(professionalCourses);
+
+        }
+        teacherDto.setCourseListDto(courseListDto);
+
+        return teacherDto;
+    }
+    public CourseListDto selectCourse(Long id, String courseStartDate, String courseName, String assessment_Methods, String curriculumNature,String temp){
+        CourseListDto responseDto = new CourseListDto();
+        if (nonNull(courseStartDate)){
+            courseStartDate= courseStartDate.trim();
+        }
+        List<CourseDto> courses = new ArrayList<>();
+
+        if (nonNull(temp)&&"teacher".equals("teacher")){
+            courses = teacherMapper.courses(id,courseStartDate,courseName,assessment_Methods,curriculumNature);
+        }else {
+             courses = studentMapper.courses(id,courseStartDate,courseName,assessment_Methods,curriculumNature);
+        }
+
+
+        if (nonNull(courses)){
+           List<CourseDto> professionalCourses =courses.stream().filter(t ->t.getCourseCategory().equals("专业基础")).map(t ->getScore(t,id)).collect(Collectors.toList());
+           List<CourseDto> commonCourses = courses.stream().filter(t ->t.getCourseCategory().equals("通识课")).map(t ->getScore(t,id)).collect(Collectors.toList());
+           List<CourseDto> laboratoryCourses = courses.stream().filter( t ->t.getCourseCategory().equals("实践环节")).map(t ->getScore(t,id)).collect(Collectors.toList());
+
+           responseDto.setLaboratoryCourses(laboratoryCourses);
+           responseDto.setCommonCourses(commonCourses);
+           responseDto.setProfessionalCourses(professionalCourses);
+
+        }
+        return responseDto;
+    }
+
+    private CourseDto getScore(CourseDto courseDto,Long id){
+        courseDto.setScore(studentMapper.getScore(courseDto.getId(),id));
+        return courseDto;
+    }
+
+        public CourseListDto selectStudent(Long id ,String grade,String studentName,String majorName,String departmentName){
+            CourseListDto responseDto = new CourseListDto();
+
+
+
+            Teacher teacher = baseDao.findById(Teacher.class,id);
+            List<Course> courseList= teacher.getCourseList();
+            List<CourseDto> professionalCourses =courseList.stream().filter(t ->t.getCourseCategory().equals("专业基础")).map(t ->changeEntityToDto(t,grade,studentName,majorName,departmentName)).map(t ->getStudentScore(t)).collect(Collectors.toList());
+            List<CourseDto> commonCourses = courseList.stream().filter(t ->t.getCourseCategory().equals("通识课")).map(t ->changeEntityToDto(t,grade,studentName,majorName,departmentName)).map(t ->getStudentScore(t)).collect(Collectors.toList());
+            List<CourseDto> laboratoryCourses = courseList.stream().filter( t ->t.getCourseCategory().equals("实践环节")).map(t ->changeEntityToDto(t,grade,studentName,majorName,departmentName)).map(t ->getStudentScore(t)).collect(Collectors.toList());
+            responseDto.setLaboratoryCourses(laboratoryCourses);
+            responseDto.setCommonCourses(commonCourses);
+            responseDto.setProfessionalCourses(professionalCourses);
+            return responseDto;
+    }
+        private CourseDto getStudentScore(CourseDto courseDto){
+               List<Student> studentList = courseDto.getStudentList();
+            List<StudentDto> studentDtoList;
+               if (isNull(courseDto.getStudentDtoList())){
+                    studentDtoList =new ArrayList<>();
+               }else {
+                    studentDtoList = courseDto.getStudentDtoList();
+               }
+
+                for (Student s:studentList) {
+                    String score = studentMapper.getScore(courseDto.getId(),s.getId());
+                    if (isNull(score)){
+                        score = "暂无成绩";
+                    }
+                    StudentDto studentDto = new StudentDto();
+                    studentDto.setScore(score);
+                    studentDto.setId(s.getId());
+                    studentDto.setStudentName(s.getStudentBaseInfo().getSname());
+                    studentDto.setMajorName(s.getMajor().getName());
+                    studentDto.setDepartmentName(s.getDepartment().getName());
+                    studentDto.setClazz(s.getStudentBaseInfo().getClazz());
+                    studentDtoList.add(studentDto);
+                }
+                courseDto.setStudentDtoList(studentDtoList);
+                return courseDto;
+        }
+
+    private CourseDto changeEntityToDto(Course course,String grade,String studentName,String majorName,String departmentName){
+            CourseDto courseDto = new CourseDto();
+            courseDto.setId(course.getId());
+            courseDto.setCourseName(course.getCourseName());
+            courseDto.setCredit(course.getCredit());
+
+            List<Student> studentList = course.getStudents().stream()
+                    .filter(t -> nonNull(grade)&&!grade.equals("")?t.getStudentBaseInfo().getGrade().equals(grade):true)
+                    .filter(t -> nonNull(studentName)&&!studentName.equals("")?t.getStudentBaseInfo().getSname().equals(studentName):true)
+                    .filter(t -> nonNull(majorName)&&!majorName.equals("")?t.getMajor().getName().equals(majorName):true)
+                    .filter(t ->nonNull(departmentName)&&!departmentName.equals("")?t.getDepartment().getName().equals(departmentName):true)
+                    .collect(Collectors.toList());
+            courseDto.setStudentList(studentList);
+            return  courseDto;
+
+    }
+
+
+
+    public void changeScore(Integer studentId,Integer courseId,Integer scoreNum){
+        Score score = teacherMapper.getScore(studentId,courseId);
+        teacherMapper.upScore(scoreNum,score.getId());
+
+    }
+    public void insert(Integer studentId,Integer courseId,Integer scoreNum){
+
+        Score score = teacherMapper.getScore(studentId,courseId);
+        if (isNull(score)){
+             score = new Score();
+            score.setCourseId(courseId);
+            score.setStudentId(studentId);
+            score.setScoreNum(scoreNum);
+            baseDao.persist(score);
+        }else {
+            teacherMapper.upScore(scoreNum,score.getId());
+        }
+
+
+
+    }
 }
