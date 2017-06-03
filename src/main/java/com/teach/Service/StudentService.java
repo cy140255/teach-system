@@ -52,6 +52,7 @@ public class StudentService {
     public void findStudentById(String userName, String password)
      {
          Student student = studentMapper.findStuddentById("zz","ok");
+         
          student =baseDao.findById(Student.class,student.getId());
         Department department = student.getDepartment();
        List<Student> students=  department.getStudentList();
@@ -190,29 +191,43 @@ public class StudentService {
 
         return teacherDto;
     }
-    public CourseListDto selectCourse(Long id, String courseStartDate, String courseName, String assessment_Methods, String curriculumNature,String temp){
+    public CourseListDto selectCourse(Long id, String courseStartDate, String courseName, String assessment_Methods, String curriculumNature,String temp,String index){
         CourseListDto responseDto = new CourseListDto();
         if (nonNull(courseStartDate)){
             courseStartDate= courseStartDate.trim();
         }
         List<CourseDto> courses = new ArrayList<>();
 
-        if (nonNull(temp)&&"teacher".equals("teacher")){
+        if (nonNull(temp)&&temp.equals("teacher")){
             courses = teacherMapper.courses(id,courseStartDate,courseName,assessment_Methods,curriculumNature);
+        }else if (nonNull(temp)&&temp.equals("admin")){
+
+            courses=teacherMapper.findAllCourses(courseStartDate,courseName,assessment_Methods,curriculumNature);
         }else {
-             courses = studentMapper.courses(id,courseStartDate,courseName,assessment_Methods,curriculumNature);
+            courses = studentMapper.courses(id,courseStartDate,courseName,assessment_Methods,curriculumNature);
         }
 
 
-        if (nonNull(courses)){
+        if (nonNull(courses)&&isNull(index)){
            List<CourseDto> professionalCourses =courses.stream().filter(t ->t.getCourseCategory().equals("专业基础")).map(t ->getScore(t,id)).collect(Collectors.toList());
            List<CourseDto> commonCourses = courses.stream().filter(t ->t.getCourseCategory().equals("通识课")).map(t ->getScore(t,id)).collect(Collectors.toList());
            List<CourseDto> laboratoryCourses = courses.stream().filter( t ->t.getCourseCategory().equals("实践环节")).map(t ->getScore(t,id)).collect(Collectors.toList());
+           List<CourseDto> graduationCourse = courses.stream().filter( t ->t.getCourseCategory().equals("毕业设计")).map(t ->getScore(t,id)).collect(Collectors.toList());
 
            responseDto.setLaboratoryCourses(laboratoryCourses);
            responseDto.setCommonCourses(commonCourses);
            responseDto.setProfessionalCourses(professionalCourses);
+           responseDto.setGraduationCourse(graduationCourse);
 
+        }else if (nonNull(index)&&"invigilator".equals(index)){
+            Teacher teacher = baseDao.findById(Teacher.class,id);
+            List<CourseDto> professionalCourses =courses.stream().filter(t ->nonNull(t.getTeacherName())&&t.getTeacherName().equals(teacher.getTeacherName())).filter(t ->t.getCourseCategory().equals("专业基础")).map(t ->getScore(t,id)).collect(Collectors.toList());
+            List<CourseDto> commonCourses = courses.stream().filter(t ->nonNull(t.getTeacherName())&&t.getTeacherName().equals(teacher.getTeacherName())).filter(t ->t.getCourseCategory().equals("通识课")).map(t ->getScore(t,id)).collect(Collectors.toList());
+            List<CourseDto> laboratoryCourses = courses.stream().filter(t ->nonNull(t.getTeacherName())&&t.getTeacherName().equals(teacher.getTeacherName())).filter( t ->t.getCourseCategory().equals("实践环节")).map(t ->getScore(t,id)).collect(Collectors.toList());
+
+            responseDto.setLaboratoryCourses(laboratoryCourses);
+            responseDto.setCommonCourses(commonCourses);
+            responseDto.setProfessionalCourses(professionalCourses);
         }
         return responseDto;
     }
@@ -224,8 +239,6 @@ public class StudentService {
 
         public CourseListDto selectStudent(Long id ,String grade,String studentName,String majorName,String departmentName){
             CourseListDto responseDto = new CourseListDto();
-
-
 
             Teacher teacher = baseDao.findById(Teacher.class,id);
             List<Course> courseList= teacher.getCourseList();
@@ -269,7 +282,13 @@ public class StudentService {
             courseDto.setId(course.getId());
             courseDto.setCourseName(course.getCourseName());
             courseDto.setCredit(course.getCredit());
+            courseDto.setClassRoom(course.getClassroom());
+            SimpleDateFormat  formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+
+            Date date = new Date();
+            courseDto.setTestTime(formatter.format(date));
+            courseDto.setStudyTime(course.getStudyTime());
             List<Student> studentList = course.getStudents().stream()
                     .filter(t -> nonNull(grade)&&!grade.equals("")?t.getStudentBaseInfo().getGrade().equals(grade):true)
                     .filter(t -> nonNull(studentName)&&!studentName.equals("")?t.getStudentBaseInfo().getSname().equals(studentName):true)
@@ -278,7 +297,6 @@ public class StudentService {
                     .collect(Collectors.toList());
             courseDto.setStudentList(studentList);
             return  courseDto;
-
     }
 
 
@@ -300,8 +318,54 @@ public class StudentService {
         }else {
             teacherMapper.upScore(scoreNum,score.getId());
         }
+    }
 
 
+    public void addCourse(BigDecimal credit,
+                          String curriculumNature,
+                          String courseCategory,
+                          String studyTime,
+                          String courseStartDate,
+                          String classroom,
+                          String clazz,
+                          String teacherName,
+                          String courseName,
+                          String grade,
+                          Integer period){
+        Course course = new Course();
+        course.setStudyTime(studyTime);
+        course.setStudyClassRoom(classroom);
+        course.setCourseName(courseName);
+        course.setCredit(credit);
+        course.setCourseStartDate(courseStartDate);
+        course.setCurriculumNature(curriculumNature);
+        course.setCourseCategory(courseCategory);
+        course.setPeriod(period);
+        List<Student> studentList = baseDao.findAll(Student.class);
+        studentList = studentList.stream().filter(t ->t.getStudentBaseInfo().getGrade().equals(grade)).filter(t ->t.getMajor().getName().equals(clazz)).collect(Collectors.toList());
+         course.setStudents(studentList);
+         List<Teacher> teachers = baseDao.findAll(Teacher.class);
+         teachers= teachers.stream().filter(t ->t.getTeacherName().equals(teacherName)).collect(Collectors.toList());
+
+
+         baseDao.persist(course);
+        course.setTeacherList(teachers);
+
+
+    }
+
+
+    public void changeTest(String select,Long courseId,String score){
+
+        if (select.equals("tesTime")){
+            teacherMapper.upTesTime(score,courseId);
+        }
+        if (select.equals("classRoom")){
+            teacherMapper.upClassrom(score,courseId);
+        }
+        if (select.equals("teacherName")){
+            teacherMapper.upTeacherName(score,courseId);
+        }
 
     }
 }

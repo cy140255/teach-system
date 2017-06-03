@@ -3,6 +3,7 @@ package com.teach.Dto;
 import com.teach.Entity.Student.Student;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,6 +19,13 @@ public class CourseDto {
     private String assessmentMethods;//考核方式
     private String curriculumNature; //课程性质
     private String courseCategory;
+    private String studyTime;
+    private String classRoom;
+    private String testTime;
+
+    private String teacherName;
+    private String statue;
+
     private List<StudentDto> studentDtoList;
     private List<Student> studentList;
 
@@ -109,5 +117,46 @@ public class CourseDto {
 
     public void setStudentDtoList(List<StudentDto> studentDtoList) {
         this.studentDtoList = studentDtoList;
+    }
+
+
+    public String getClassRoom() {
+        return classRoom;
+    }
+
+    public void setClassRoom(String classRoom) {
+        this.classRoom = classRoom;
+    }
+
+    public String getTestTime() {
+        return testTime;
+    }
+
+    public void setTestTime(String testTime) {
+        this.testTime = testTime;
+    }
+
+    public String getStudyTime() {
+        return studyTime;
+    }
+
+    public void setStudyTime(String studyTime) {
+        this.studyTime = studyTime;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getStatue() {
+        return statue;
+    }
+
+    public void setStatue(String statue) {
+        this.statue = statue;
     }
 }

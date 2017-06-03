@@ -32,25 +32,25 @@
     <div class="left">
         <div class="left_img">
             <img src="img/课程.png" />
-            <a href="select.do?id=${student.id}" target="mainframe"> <span class="left_span">课程查询</span></a>
+            <a href="select.do?id=${student.id}" target="mainframe" style="text-decoration: none;color: #b52b27"> <span class="left_span">课程查询</span></a>
         </div>
     </div>
     <div class="left">
         <div class="left_img">
             <img src="img/成绩.png" />
-            <span class="left_span">成绩查询</span>
+            <a href="select.do?id=${student.id}&temp=test" target="mainframe" style="text-decoration: none;color: #b52b27"><span class="left_span">考试查询</span></a>
         </div>
     </div>
     <div class="left">
         <div class="left_img">
             <img src="img/选课.png" />
-            <span class="left_span">选课管理</span>
+            <a href="select.do?id=${student.id}&temp=graduationProject" target="mainframe" style="text-decoration: none;color: #b52b27"><span class="left_span">课设查询</span></a>
         </div>
     </div>
     <div class="left">
         <div class="left_img">
             <img src="img/学籍.png" />
-            <span class="left_span">学籍管理</span>
+            <a href="findStudent.do?studentId=${student.id}" target="mainframe" style="text-decoration: none;color: #b52b27"><span class="left_span">学籍管理</span></a>
         </div>
     </div>
 </div>

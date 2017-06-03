@@ -16,6 +16,7 @@ import javax.ws.rs.QueryParam;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 /**
  * Created by 14025 on 2017/5/10.
@@ -35,17 +36,27 @@ public class SelectCourse {
                          @QueryParam("assessment_Methods")String assessment_Methods,
                          @QueryParam("curriculumNature")String curriculumNature,
                          @QueryParam("temp")String temp,
+                         @QueryParam("index")String index,
                          HttpSession session){
         session.removeAttribute("courseListDto");
-        CourseListDto courseListDto= studentService.selectCourse(id,courseStartDate,courseName,assessment_Methods,curriculumNature,temp);
-
-        if (nonNull(temp)&&"teacher".equals("teacher")){
-            TeacherDto teacherDto = new TeacherDto();
-            teacherDto.setCourseListDto(courseListDto);
-            session.setAttribute("teacherDto",teacherDto);
-            return "teacher/course";
-        }
+        CourseListDto courseListDto= studentService.selectCourse(id,courseStartDate,courseName,assessment_Methods,curriculumNature,temp,index);
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setCourseListDto(courseListDto);
+        session.setAttribute("teacherDto",teacherDto);
         session.setAttribute("courseListDto",courseListDto);
+        if (nonNull(temp)&&temp.equals("teacher")&&isNull(index)){
+
+            return "teacher/course";
+        }else if (nonNull(temp)&&temp.equals("test")&&isNull(index)){
+            return "student/test";
+        }if (nonNull(temp)&&temp.equals("graduationProject")&&isNull(index)){
+            return "student/graduationProject";
+        }else if (nonNull(index)&&index.equals("invigilator")){
+            return "teacher/test";
+        }else if (nonNull(temp)&&temp.equals("admin")&&isNull(index)){
+            return "admin/selectCourse";
+        }
+
         return "course/course";
     }
 }

@@ -7,18 +7,48 @@
         SELECT * FROM Teacher WHERE  teacherId = #{teacherId} and password=#{password}
     </select>
 
+    <select id="findAdmin" resultType="com.teach.Entity.Admin.Admin">
+        SELECT * FROM Admin WHERE  adminId = #{teacherId} and password=#{password}
+    </select>
+
 
 
 
     <select id="courses" resultType="com.teach.Dto.CourseDto">
-        SELECT
-        *
+        SELECT *
         FROM COURSE course
         INNER JOIN course_teacher teacher ON teacher.course_id=course.ID
         <where>
             <if test="id != null and id !='' ">
                 teacher.teacher_id = #{id}
             </if>
+
+            <if test="courseStartDate !=null and courseStartDate !='' ">
+                AND course.courseStartDate = #{courseStartDate}
+            </if>
+
+            <if test="courseName !=null and courseName !='' ">
+                AND course.courseName LIKE CONCAT('%',#{courseName},'%')
+            </if>
+
+            <if test="assessment_Methods !=null and assessment_Methods !='' ">
+                AND course.assessmentMethods = #{assessment_Methods}
+            </if>
+
+            <if test="curriculumNature !=null and curriculumNature !='' ">
+                AND course.curriculumNature = #{curriculumNature}
+            </if>
+
+
+        </where>
+
+    </select>
+
+    <select id="findAllCourses" resultType="com.teach.Dto.CourseDto">
+        SELECT *
+        FROM COURSE course
+        <where>
+
 
             <if test="courseStartDate !=null and courseStartDate !='' ">
                 AND course.courseStartDate = #{courseStartDate}
@@ -49,5 +79,17 @@
 
     <update id="upScore">
         UPDATE score set scoreNum = #{scoreNum} WHERE  id = #{id}
+    </update>
+
+    <update id="upTesTime">
+        UPDATE course set testTime = #{score} WHERE  id = #{id}
+    </update>
+
+    <update id="upClassrom">
+        UPDATE course set classroom = #{score} WHERE  id = #{id}
+    </update>
+
+    <update id="upTeacherName">
+        UPDATE course set teacherName = #{score} WHERE  id = #{id}
     </update>
 </mapper>

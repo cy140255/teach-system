@@ -104,7 +104,7 @@
                 <th class="Nsb_r_list_thb" scope="col">课程类别</th>
                 <th class="Nsb_r_list_thb" scope="col">课程性质</th>
                 <th class="Nsb_r_list_thb" scope="col">总成绩</th>
-                <th class="Nsb_r_list_thb" scope="col">备注</th>
+                <th class="Nsb_r_list_thb" scope="col">上课时间</th>
             </tr>
 
             <tr>
@@ -133,7 +133,7 @@
                        <td>${commonCourses.courseCategory}</td>
                        <td>${commonCourses.curriculumNature}</td>
                        <td>${commonCourses.score}</td>
-                       <td>&nbsp;</td>
+                       <td>${commonCourses.studyTime}</td>
                    </tr>
 
                </c:forEach>
@@ -170,7 +170,7 @@
                             <td>${professionalCourses.courseCategory}</td>
                             <td>${professionalCourses.curriculumNature}</td>
                             <td>${professionalCourses.score}</td>
-                            <td>&nbsp;</td>
+                            <td>${professionalCourses.studyTime}</td>
                         </tr>
 
                     </c:forEach>
@@ -208,7 +208,7 @@
                             <td>${laboratoryCourses.courseCategory}</td>
                             <td>${laboratoryCourses.curriculumNature}</td>
                             <td>${laboratoryCourses.score}</td>
-                            <td>&nbsp;</td>
+                            <td>${laboratoryCourses.studyTime}</td>
                         </tr>
 
                     </c:forEach>

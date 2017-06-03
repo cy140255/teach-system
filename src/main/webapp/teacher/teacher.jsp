@@ -44,15 +44,10 @@
         <div class="left">
             <div class="left_img">
                 <img src="img/选课.png" />
-                <span class="left_span">选课管理</span>
+                <a href="select.do?id=${teacher.id}&temp=teacher&index=invigilator" target="mainframe" style="text-decoration: none;color: #b52b27">  <span class="left_span">监考查询</span></a>
             </div>
         </div>
-        <div class="left">
-            <div class="left_img">
-                <img src="img/学籍.png" />
-                <span class="left_span">个人信息管理</span>
-            </div>
-        </div>
+
     </div>
 </div>
 <div class="rightDiv" style="float: left">

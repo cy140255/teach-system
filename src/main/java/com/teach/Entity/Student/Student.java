@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by superfq on 2017/3/14.
+ * Created by cy on 2017/3/14.
  */
 @Entity
 @Table(name = "STUDENT")

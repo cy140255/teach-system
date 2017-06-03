@@ -12,6 +12,7 @@ public class CourseListDto {
     private List<CourseDto> professionalCourses = new ArrayList<>();
     private List<CourseDto> commonCourses = new ArrayList<>();
     private List<CourseDto> laboratoryCourses = new ArrayList<>();
+    private List<CourseDto> graduationCourse = new ArrayList<>();
 
 
     public List<CourseDto> getProfessionalCourses() {
@@ -36,5 +37,13 @@ public class CourseListDto {
 
     public void setLaboratoryCourses(List<CourseDto> laboratoryCourses) {
         this.laboratoryCourses = laboratoryCourses;
+    }
+
+    public List<CourseDto> getGraduationCourse() {
+        return graduationCourse;
+    }
+
+    public void setGraduationCourse(List<CourseDto> graduationCourse) {
+        this.graduationCourse = graduationCourse;
     }
 }

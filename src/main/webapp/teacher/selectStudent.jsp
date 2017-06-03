@@ -31,19 +31,21 @@
         var scoreNum;
          function change(score,id,Id) {
               scoreNum =score;
-             studentId = id;
+             var arr = id.split(",");
+             studentId = arr[1];
+            var  inputId = arr[0]+arr[1];
              courseId=Id;
-            temp = 'ab'+id;
+            temp = 'ab'+arr[1];
             if (score=='暂无成绩'){
               var  val = "请输入成绩";
-                $('#'+id).html("");
-                $('#'+id).append($("<input size='10px' >").attr("id",temp).append("type","text").attr("value",val).attr("onblur","score()").attr("onkeypress","return event.keyCode>=48&&event.keyCode<=57||(this.value.indexOf('.')<0?event.keyCode==46:false)").attr("onpaste","return !clipboardData.getData('text').match(/\D/)"));
+                $('#'+inputId).html("");
+                $('#'+inputId).append($("<input size='10px' >").attr("id",temp).append("type","text").attr("value",val).attr("onblur","score()").attr("onkeypress","return event.keyCode>=48&&event.keyCode<=57||(this.value.indexOf('.')<0?event.keyCode==46:false)").attr("onpaste","return !clipboardData.getData('text').match(/\D/)"));
 
 
             }else {
                 var  val =score;
-                $('#' + id).html("");
-                $('#'+id).append($("<input size='2px' >").attr("id",temp).append("type","text").attr("value",val).attr("onblur","score()").attr("onkeypress","return event.keyCode>=48&&event.keyCode<=57||(this.value.indexOf('.')<0?event.keyCode==46:false)").attr("onpaste","return !clipboardData.getData('text').match(/\D/)"));
+                $('#' + inputId).html("");
+                $('#'+inputId).append($("<input size='2px' >").attr("id",temp).append("type","text").attr("value",val).attr("onblur","score()").attr("onkeypress","return event.keyCode>=48&&event.keyCode<=57||(this.value.indexOf('.')<0?event.keyCode==46:false)").attr("onpaste","return !clipboardData.getData('text').match(/\D/)"));
 
             }
 
@@ -163,14 +165,13 @@
            <c:otherwise >
 
                <c:forEach items="${selectStudent.commonCourses[0].studentDtoList}" var="commonCourses">
-                   <input type="hidden" value="${commonCourses.studentBaseInfo.id}" id="hidden" />
                    <tr>
-                       <td>${commonCourses.studentName}</td>
+                       <td><a href="findStudent.do?studentId=${commonCourses.id}" >${commonCourses.studentName}</a></td>
                        <td>${commonCourses.majorName}</td>
                        <td>${commonCourses.clazz}</td>
                        <td>${selectStudent.commonCourses[0].courseName}</td>
                        <td>${selectStudent.commonCourses[0].credit}</td>
-                       <td id="a${commonCourses.id}"  style="word-break:break-all;word-wrap:break-word;"  onclick="change('${commonCourses.score}','a${commonCourses.id}','${selectStudent.commonCourses[0].id}')">${commonCourses.score}</td>
+                       <td id="a${commonCourses.id}"  style="word-break:break-all;word-wrap:break-word;"  onclick="change('${commonCourses.score}','a,${commonCourses.id}','${selectStudent.commonCourses[0].id}')">${commonCourses.score}</td>
                        <td>&nbsp;</td>
                    </tr>
 
@@ -202,12 +203,12 @@
                 <c:otherwise >
                     <c:forEach items="${selectStudent.professionalCourses[0].studentDtoList}" var="professionalCourses">
                         <tr>
-                            <td>${professionalCourses.studentName}</td>
+                            <td><a href="findStudent.do?studentId=${professionalCourses.id}" >${professionalCourses.studentName}</a></td>
                             <td>${professionalCourses.majorName}</td>
                             <td>${professionalCourses.clazz}</td>
                             <td>${selectStudent.professionalCourses[0].courseName}</td>
                             <td>${selectStudent.professionalCourses[0].credit}</td>
-                            <td id="b${professionalCourses.id}" onclick="change('${professionalCourses.score}','b${professionalCourses.id}','${selectStudent.professionalCourses[0].id}')">${professionalCourses.score}</td>
+                            <td id="b${professionalCourses.id}" onclick="change('${professionalCourses.score}','b,${professionalCourses.id}','${selectStudent.professionalCourses[0].id}')">${professionalCourses.score}</td>
                             <td>&nbsp;</td>
                         </tr>
 
@@ -240,7 +241,7 @@
                 <c:otherwise >
                     <c:forEach items="${selectStudent.laboratoryCourses[0].studentDtoList}" var="laboratoryCourses">
                         <tr>
-                            <td>${laboratoryCourses.studentName}</td>
+                            <td><a href="findStudent.do?studentId=${laboratoryCourses.id}" >${laboratoryCourses.studentName}</a></td>
                             <td>${laboratoryCourses.majorName}</td>
                             <td>${laboratoryCourses.clazz}</td>
                             <td>${selectStudent.laboratoryCourses[0].courseName}</td>

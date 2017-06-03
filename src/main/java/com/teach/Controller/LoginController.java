@@ -4,6 +4,7 @@ import com.teach.Dto.CourseDto;
 import com.teach.Dto.CourseListDto;
 import com.teach.Dto.StudentDto;
 import com.teach.Dto.TeacherDto;
+import com.teach.Entity.Admin.Admin;
 import com.teach.Entity.Student.Student;
 import com.teach.Entity.Teacher.Teacher;
 import com.teach.Mapper.StudentMapper;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.QueryParam;
 
 import static java.util.Objects.isNull;
@@ -44,11 +46,12 @@ public class LoginController {
 
 
     @RequestMapping(value = "/login.do",method = RequestMethod.GET)
-    public String login(@QueryParam("Student_ID")Long studentId, @QueryParam("password")String password,Map<String,Object> map){
+    public String login(@QueryParam("Student_ID")Long studentId, @QueryParam("password")String password, Map<String,Object> map, HttpSession session){
         Student student = studentMapper.findStudent(studentId,password);
         Teacher teacher = teacherMapper.findTeacher(studentId,password);
+        Admin admin = teacherMapper.findAdmin(studentId,password);
         if (nonNull(student)) {
-            CourseListDto courseListDto = studentService.selectCourse(student.getId(), "","","","","");
+            CourseListDto courseListDto = studentService.selectCourse(student.getId(), "","","","","","");
             if (nonNull(student)) {
                 map.put("student",student);
                 map.put("courseListDto", courseListDto);
@@ -61,11 +64,16 @@ public class LoginController {
             map.put("teacherDto", teacherDto);
             return "teacher/teacher";
 
-        }else {
+        }else if (nonNull(admin)){
 
-            return "login";
+            CourseListDto courseListDto= studentService.selectCourse(null,null,null,null,null,"teacher",null);
+            TeacherDto teacherDto = new TeacherDto();
+            teacherDto.setCourseListDto(courseListDto);
+            session.setAttribute("teacherDto",teacherDto);
+            session.setAttribute("courseListDto",courseListDto);
+            return "admin/admin";
 
         }
-
+        return "login";
     }
 }

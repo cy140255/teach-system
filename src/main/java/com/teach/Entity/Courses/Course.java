@@ -3,18 +3,20 @@ package com.teach.Entity.Courses;
 import com.teach.Entity.Student.Score;
 import com.teach.Entity.Student.Student;
 import com.teach.Entity.Teacher.Teacher;
+import com.util.entity.AggregateRoot;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
+import static java.util.Objects.isNull;
 /**
  * Created by 14025 on 2017/5/10.
  */
 @Entity
 @Table(name = "course")
-public class Course {
+public class Course extends AggregateRoot{
 
     @Id
     @Column(name = "ID", nullable = false, unique = true)
@@ -26,8 +28,6 @@ public class Course {
 
     @Column(name = "courseName")
     private String courseName;
-
-
 
     @Column(name = "credit")
     private BigDecimal credit;//学分
@@ -45,6 +45,24 @@ public class Course {
     private String courseCategory;
 
 
+    @Column(name = "classroom")
+    private String classroom;
+
+    @Column(name = "testTime")
+    private String testTime;
+
+    @Column(name = "studyTime")
+    private String studyTime;
+
+    @Column(name = "teacherName")
+    private String teacherName;
+
+
+    @Column(name = "studyClassRoom")
+    private String studyClassRoom;
+
+    @Column(name = "statue")
+    private String statue;
     @ManyToMany
     @JoinTable( name = "course_student",
             joinColumns = {@JoinColumn(name = "course_id",referencedColumnName = "id")},
@@ -140,5 +158,58 @@ public class Course {
         this.teacherList = teacherList;
     }
 
+    public String getClassroom() {
+        return classroom;
+    }
 
+    public void setClassroom(String classroom) {
+        this.classroom = classroom;
+    }
+
+    public String getTestTime() {
+        return testTime;
+    }
+
+    public void setTestTime(String testTime) {
+        this.testTime = testTime;
+    }
+
+    public String getStudyTime() {
+        return studyTime;
+    }
+
+    public void setStudyTime(String studyTime) {
+
+        if (isNull(studyTime)){
+            this.studyTime ="暂无数据";
+        }else {
+            this.studyTime = studyTime;
+        }
+
+
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getStatue() {
+        return statue;
+    }
+
+    public void setStatue(String statue) {
+        this.statue = statue;
+    }
+
+    public String getStudyClassRoom() {
+        return studyClassRoom;
+    }
+
+    public void setStudyClassRoom(String studyClassRoom) {
+        this.studyClassRoom = studyClassRoom;
+    }
 }

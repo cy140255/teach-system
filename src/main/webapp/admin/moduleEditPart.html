@@ -1,0 +1,30 @@
+<form id="moduleEditForm" method="post" novalidate>
+    <div class="fitem">
+        <label>名称:</label>
+        <input name="moduleName" id="moduleName" class="easyui-textbox"
+               data-options="required:true,
+                             validType:'text'">
+    </div>
+    <div class="fitem">
+        <label>模块代码:</label>
+        <input name="moduleCode" id="moduleCode" class="easyui-textbox" required="true">
+    </div>
+    <div class="fitem">
+        <label>异常码:</label>
+        <input name="exceptionCode" id="exceptionCode" class="easyui-textbox" required="true">
+    </div>
+    <div class="fitem">
+        <label>失败码:</label>
+        <input name="failureCode" id="failureCode" class="easyui-textbox" required="true">
+    </div>
+    <div class="fitem">
+        <label>超时码:</label>
+        <input name="timeoutCode" id="timeoutCode" class="easyui-textbox" required="true">
+    </div>
+    <div class="fitem">
+        <label>IP:</label>
+        <input name="ip" id="ip" class="easyui-textbox" required="true">
+    </div>
+
+    <input name="id"  hidden="true">
+</form>
